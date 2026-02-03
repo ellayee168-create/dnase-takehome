@@ -7,10 +7,10 @@
   ],
   "chrombpnet": {
     "repo_url": "https://github.com/kundajelab/chrombpnet",
-    "commit_sha": "abc123"
+    "commit_sha": "ea362f4"
   },
   "normalization": {
-    "pre_total": 169692851.12,
+    "pre_total": 169688851.12,
     "post_total": 100000000.0,
     "scaling_factor": 0.5893067866090744
   },
