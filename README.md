@@ -39,9 +39,7 @@ wget https://hgdownload.cse.ucsc.edu/goldenpath/hg38/bigZips/hg38.chrom.sizes
 
 ## Your Task
 
-### 1. Implement `run_dnase_tracks.py`
-
-Complete the pipeline script to:
+Implement `run_dnase_tracks.py` to:
 
 - Download BAM files from ENCODE (or accept local paths for testing)
 - Validate inputs (BAM exists, has index, chromosome compatibility)
@@ -49,15 +47,6 @@ Complete the pipeline script to:
 - Aggregate replicates by averaging
 - Normalize to 10^8 total counts
 - Write manifest.json with full provenance
-
-### 2. Implement `quality_checks.py`
-
-Complete the quality checking script to validate:
-
-- BigWig file integrity
-- Normalization accuracy (within 1% tolerance)
-- Manifest completeness
-- Cross-cell-line consistency
 
 ## Expected Output
 
@@ -108,9 +97,6 @@ python scripts/generate_test_data.py --output-dir test_data --small
 
 # Run public tests (uses synthetic data)
 pytest tests/public/ -v
-
-# Run your quality checks
-python quality_checks.py --output-dir out/
 ```
 
 ## Evaluation Criteria
