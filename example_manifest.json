@@ -1,0 +1,21 @@
+{
+  "cell_line": "HEK293T",
+  "replicates": [
+    {"replicate_id": "ENCFF084GPM"},
+    {"replicate_id": "ENCFF120XFB"},
+    {"replicate_id": "ENCFF626OML"}
+  ],
+  "chrombpnet": {
+    "repo_url": "https://github.com/kundajelab/chrombpnet",
+    "commit_sha": "abc123"
+  },
+  "normalization": {
+    "pre_total": 169692851.12,
+    "post_total": 100000000.0,
+    "scaling_factor": 0.5893067866090744
+  },
+  "aggregation": {
+    "non_zero_average_mean": 0.3987913021181779,
+    "n_replicates": 3
+  }
+}
