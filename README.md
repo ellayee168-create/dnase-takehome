@@ -6,7 +6,7 @@ Implement the DNase preprocessing pipeline following the Alphagenome methodology
 
 ## Objective
 
-Process DNase-seq data for 3 cell lines through the following pipeline:
+You will implement the DNase preprocessing step described in the Alphagenome paper for 3 cell lines (GM12878, HeLa-S3, and SK-N-SH). At a high level, you should:
 
 1. **Download** BAM files from ENCODE
 2. **Convert** BAM → BigWig using ChromBPNet's `reads_to_bigwig.py`
@@ -14,15 +14,17 @@ Process DNase-seq data for 3 cell lines through the following pipeline:
 4. **Normalize** to 10^8 total counts
 5. **Validate** output and generate provenance manifest
 
+Ensure that you apply your quality control similarly to how Alphagenome did.
+
 ## Target Cell Lines
 
 Download DNase-seq aligned BAM files (hg38) from ENCODE for:
 
-| Cell Line | ENCODE Experiment |
-|-----------|-------------------|
-| MCF-7     | [ENCSR000EJD](https://www.encodeproject.org/experiments/ENCSR000EJD/) |
-| K562      | [ENCSR000EMT](https://www.encodeproject.org/experiments/ENCSR000EMT/) |
-| SK-N-SH   | [ENCSR000ENH](https://www.encodeproject.org/experiments/ENCSR000ENH/) |
+| Cell Line | Description |
+|-----------|-------------|
+| GM12878   | Lymphoblastoid cell line |
+| HeLa-S3   | Cervical cancer cell line |
+| SK-N-SH   | Neuroblastoma cell line |
 
 For each experiment, find the "alignments" files in BAM format with **hg38** assembly. Download all biological replicates.
 
@@ -37,26 +39,31 @@ conda activate dnase-pipeline
 wget https://hgdownload.cse.ucsc.edu/goldenpath/hg38/bigZips/hg38.chrom.sizes
 ```
 
-## Your Task
+## CLI Requirements
 
-Implement `run_dnase_tracks.py` to:
+One command that runs end-to-end:
 
-- Download BAM files from ENCODE (or accept local paths for testing)
-- Validate inputs (BAM exists, has index, chromosome compatibility)
-- Convert BAM → BigWig using ChromBPNet
-- Aggregate replicates by averaging
-- Normalize to 10^8 total counts
-- Write manifest.json with full provenance
+```bash
+python run_dnase_tracks.py \
+    --metadata metadata.tsv \
+    --chrom-sizes reference.chrom.sizes \
+    --outdir out/ \
+    --threads 4
+```
+
+Requirements:
+- Exits with code 0 on success, non-zero on failure
+- Writes logs to `out/<cell_line>/pipeline.log`
 
 ## Expected Output
 
 ```
 out/
-├── MCF-7/
+├── GM12878/
 │   ├── dnase_avg_norm100M.bw    # Final normalized BigWig
 │   ├── manifest.json             # Provenance and metadata
 │   └── pipeline.log              # Processing log
-├── K562/
+├── HeLa-S3/
 │   └── ...
 └── SK-N-SH/
     └── ...
@@ -66,7 +73,7 @@ out/
 
 ```json
 {
-  "cell_line": "MCF-7",
+  "cell_line": "GM12878",
   "replicates": [
     {"replicate_id": "ENCFF..."}
   ],
@@ -86,6 +93,28 @@ out/
 }
 ```
 
+## Requirements
+
+### Determinism
+- We will run your pipeline at least twice on the same inputs
+- The final file must be identical between runs (same checksum)
+- If you use any nondeterministic tools (multithreading, temp files, etc.), you are responsible for ensuring that your final results are consistent
+
+### Methods
+- Your pipeline must follow exactly what the paper describes for their DNase/ATAC preprocessing
+- You may use any ChromBPNet version, but you must record which commit you used in manifest.json
+
+### Validation (done by your pipeline)
+- BigWig validity (file exists and is readable)
+- Chromosome names match
+- Total signal sum in the final BigWig is 10^8 AUC (within reasonable tolerance)
+- Replicate aggregation: Record which sample IDs are aggregated for each cell line
+
+### Failure Behavior
+On failure:
+- Exit non-zero
+- Write a helpful error message to the appropriate pipeline.log file
+
 ## Testing
 
 ```bash
@@ -96,13 +125,30 @@ python scripts/generate_test_data.py --output-dir test_data --small
 pytest tests/public/ -v
 ```
 
-## Evaluation Criteria
+## Grading Criteria
 
-1. **Correctness**: Output matches expected format and normalization
-2. **Reproducibility**: Deterministic output (same input → same output)
-3. **Error Handling**: Graceful handling of missing/corrupted files
-4. **Code Quality**: Clean, readable, well-documented code
-5. **Provenance**: Complete manifest for reproducibility
+We grade primarily on operational quality and your ability to explain your choices:
+- Should be able to rerun your code and get the same outputs with no debugging required
+
+Should have:
+- Deterministic reruns
+- Conda env reproducibility
+- Clear CLI + logs
+- Strict and consistent output naming with the given keys
+- Valid BigWigs that are correctly normalized
+
+You will have visible test cases that you can run to verify parts of your output:
+- All visible test cases will use your manifest.json file
+
+We will manually verify parts such as the validation steps and the failure behavior to ensure they are implemented correctly.
+
+## Submission
+
+- Edit the given GitHub repo containing:
+  - `run_dnase_tracks.py`
+  - `environment.yml`
+  - Any other relevant code
+- Zip file containing your final DNase tracks
 
 ## Requirements
 

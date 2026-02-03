@@ -11,31 +11,36 @@ Your task:
 4. Normalize to 10^8 total counts
 5. Output a manifest.json with provenance information
 
-Target cell lines and their ENCODE experiment accessions:
-- MCF-7: ENCSR000EJD
-- K562: ENCSR000EMT
-- SK-N-SH: ENCSR000ENH
+Target cell lines:
+- GM12878
+- HeLa-S3
+- SK-N-SH
 
-Find BAM file URLs at: https://www.encodeproject.org/experiments/{ACCESSION}/
-Look for "alignments" files in BAM format with hg38 assembly.
+CLI usage:
+    python run_dnase_tracks.py \
+        --metadata metadata.tsv \
+        --chrom-sizes reference.chrom.sizes \
+        --outdir out/ \
+        --threads 4
 
 Expected output structure:
     out/
-    ├── MCF-7/
+    ├── GM12878/
     │   ├── dnase_avg_norm100M.bw
     │   ├── manifest.json
     │   └── pipeline.log
-    ├── K562/
+    ├── HeLa-S3/
     │   └── ...
     └── SK-N-SH/
         └── ...
 
 manifest.json must contain:
 - cell_line: Name of the cell line
-- replicates: List of {replicate_id}
+- replicates: List of {replicate_id, bam_path}
 - chrombpnet: {repo_url, commit_sha}
-- normalization: {pre_total, post_total, scaling_factor}
-- aggregation: {non_zero_average_mean, n_replicates}
+- commands: List of commands run
+- normalization: {target_total, pre_total, post_total, scaling_factor, tolerance}
+- aggregation: {method, non_zero_average_mean, n_replicates}
 
 Author: [Your Name]
 """

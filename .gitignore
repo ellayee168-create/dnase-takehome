@@ -79,3 +79,6 @@ test_data/
 *.tmp
 temp/
 tmp/
+
+# Private test data (added during grading)
+tests/private/

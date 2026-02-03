@@ -198,8 +198,8 @@ def main():
 
     # Define cell lines and replicates
     cell_lines = {
-        "MCF-7": ["ENCFF001MCF_rep1", "ENCFF002MCF_rep2"],
-        "K562": ["ENCFF001K56_rep1", "ENCFF002K56_rep2", "ENCFF003K56_rep3"],
+        "GM12878": ["ENCFF001GM1_rep1", "ENCFF002GM1_rep2"],
+        "HeLa-S3": ["ENCFF001HLS_rep1", "ENCFF002HLS_rep2", "ENCFF003HLS_rep3"],
         "SK-N-SH": ["ENCFF001SKN_rep1", "ENCFF002SKN_rep2"],
     }
 

@@ -7,10 +7,8 @@ Students can use these tests to validate their implementation.
 """
 
 import json
-import os
 import subprocess
 import sys
-import tempfile
 from pathlib import Path
 
 import numpy as np
@@ -93,38 +91,6 @@ def pipeline_output(test_data_dir, tmp_path_factory):
 
 
 # ============================================================================
-# Test: Output Structure
-# ============================================================================
-
-class TestOutputStructure:
-    """Tests for correct output file structure."""
-
-    def test_output_directory_exists(self, pipeline_output):
-        """Output directory should be created."""
-        assert Path(pipeline_output).exists()
-
-    def test_cell_line_directory_exists(self, pipeline_output):
-        """Cell line subdirectory should be created."""
-        cell_dir = Path(pipeline_output) / "TestCell"
-        assert cell_dir.exists(), f"Cell line directory not found: {cell_dir}"
-
-    def test_bigwig_exists(self, pipeline_output):
-        """Final BigWig file should exist."""
-        bw_path = Path(pipeline_output) / "TestCell" / "dnase_avg_norm100M.bw"
-        assert bw_path.exists(), f"BigWig not found: {bw_path}"
-
-    def test_manifest_exists(self, pipeline_output):
-        """Manifest JSON should exist."""
-        manifest_path = Path(pipeline_output) / "TestCell" / "manifest.json"
-        assert manifest_path.exists(), f"Manifest not found: {manifest_path}"
-
-    def test_pipeline_log_exists(self, pipeline_output):
-        """Pipeline log should exist."""
-        log_path = Path(pipeline_output) / "TestCell" / "pipeline.log"
-        assert log_path.exists(), f"Log not found: {log_path}"
-
-
-# ============================================================================
 # Test: BigWig Validity
 # ============================================================================
 
@@ -139,207 +105,131 @@ class TestBigWigValidity:
             assert bw is not None
             assert bw.isBigWig()
 
-    def test_bigwig_has_chromosomes(self, pipeline_output):
-        """BigWig should contain chromosome data."""
+
+# ============================================================================
+# Test: Manifest Accuracy
+# ============================================================================
+
+class TestManifestAccuracy:
+    """Tests for manifest.json accuracy."""
+
+    def test_manifest_non_zero_average_mean_matches_bigwig(self, pipeline_output):
+        """Manifest non_zero_average_mean should match computed value from BigWig."""
+        manifest_path = Path(pipeline_output) / "TestCell" / "manifest.json"
         bw_path = Path(pipeline_output) / "TestCell" / "dnase_avg_norm100M.bw"
 
-        with pyBigWig.open(str(bw_path)) as bw:
-            chroms = bw.chroms()
-            assert len(chroms) > 0, "BigWig has no chromosomes"
+        with open(manifest_path) as f:
+            manifest = json.load(f)
 
-    def test_bigwig_has_signal(self, pipeline_output):
-        """BigWig should contain signal values."""
-        bw_path = Path(pipeline_output) / "TestCell" / "dnase_avg_norm100M.bw"
-
+        # Compute non-zero average mean from BigWig
+        non_zero_values = []
         with pyBigWig.open(str(bw_path)) as bw:
-            total_signal = 0
             for chrom in bw.chroms():
                 intervals = bw.intervals(chrom)
                 if intervals:
                     for start, end, value in intervals:
-                        total_signal += value * (end - start)
+                        if value != 0:
+                            non_zero_values.append(value)
 
-            assert total_signal > 0, "BigWig has zero total signal"
+        computed_mean = np.mean(non_zero_values) if non_zero_values else 0.0
+        manifest_mean = manifest["aggregation"]["non_zero_average_mean"]
 
-
-# ============================================================================
-# Test: Normalization
-# ============================================================================
-
-class TestNormalization:
-    """Tests for signal normalization."""
-
-    TARGET_TOTAL = 1e8
-    TOLERANCE = 0.01
-
-    def test_normalized_to_target(self, pipeline_output):
-        """BigWig total signal should be normalized to 10^8."""
-        bw_path = Path(pipeline_output) / "TestCell" / "dnase_avg_norm100M.bw"
-
-        with pyBigWig.open(str(bw_path)) as bw:
-            total_signal = 0
-            for chrom in bw.chroms():
-                intervals = bw.intervals(chrom)
-                if intervals:
-                    for start, end, value in intervals:
-                        total_signal += value * (end - start)
-
-        relative_error = abs(total_signal - self.TARGET_TOTAL) / self.TARGET_TOTAL
-        assert relative_error <= self.TOLERANCE, (
-            f"Normalization error too high: {relative_error:.4f} > {self.TOLERANCE}"
+        # Allow small tolerance for floating point differences
+        assert abs(computed_mean - manifest_mean) < 1e-6, (
+            f"non_zero_average_mean mismatch: manifest={manifest_mean}, computed={computed_mean}"
         )
 
 
 # ============================================================================
-# Test: Manifest Contents
+# Test: Expected Values Validation (hash-based, values hidden)
 # ============================================================================
 
-class TestManifest:
-    """Tests for manifest.json contents."""
+class TestExpectedValues:
+    """Tests that validate manifest values against reference data.
 
-    REQUIRED_KEYS = [
-        "cell_line",
-        "replicates",
-        "chrombpnet",
-        "commands",
-        "normalization",
-        "aggregation",
-    ]
+    Expected values are stored as hashes so candidates can verify correctness
+    without seeing the actual expected values.
+    """
 
-    def test_manifest_valid_json(self, pipeline_output):
-        """Manifest should be valid JSON."""
-        manifest_path = Path(pipeline_output) / "TestCell" / "manifest.json"
+    # SHA256 hashes of acceptable non_zero_average_mean values (±0.01 tolerance)
+    # Each cell line accepts 3 values: expected-0.01, expected, expected+0.01
+    EXPECTED_HASHES = {
+        "GM12878": [
+            "2bb5a2194f062fe01073e1a714faf9e34032cf2afb6c224010aaa1b1090b510e",  # 1.96
+            "c558fa9c4a4a6ad4962c10fa6b220b5a9a7129ac62c2f17ab96ff96ff7c29024",  # 1.97
+            "4348672d1a85fab51648c276be79cc8ee80608359b01705cd9a7f30dba2cb9dc",  # 1.98
+        ],
+        "HeLa-S3": [
+            "90e683111c8a35ea92f86870185d5350d940315840e636019baa36cd37bb1dc7",  # 0.60
+            "c85e09eb8176db9e00c43c8bdc564dd91330c9d14f2a52ad6bc7872931e4c7ef",  # 0.61
+            "6669743c77ff5bb876bc7aa9cd5d54b997bee0bd5b6e1f86a1516feb574b0ff6",  # 0.62
+        ],
+        "SK-N-SH": [
+            "18db98e3760ea46503aa9f79ad850cc408d0192446a5666220ca3b99346e3e8c",  # 0.69
+            "67194cd2e7ca284251eab9f18c295f7f031fb464267547240d7350e2707895a9",  # 0.70
+            "c68fa0c5dd8c9a2cf6555708f938a5d592d20b0d81f0d40ac6221d07500ae145",  # 0.71
+        ],
+    }
 
-        with open(manifest_path) as f:
-            manifest = json.load(f)
+    @staticmethod
+    def _hash_value(value: float) -> str:
+        """Hash a float value rounded to 2 decimal places."""
+        import hashlib
+        rounded = f"{value:.2f}"
+        return hashlib.sha256(rounded.encode()).hexdigest()
 
-        assert isinstance(manifest, dict)
+    @pytest.fixture(scope="class")
+    def real_output_dir(self):
+        """Return the output directory for real ENCODE data runs."""
+        return Path(__file__).parent.parent.parent / "out"
 
-    def test_manifest_has_required_keys(self, pipeline_output):
-        """Manifest should contain all required keys."""
-        manifest_path = Path(pipeline_output) / "TestCell" / "manifest.json"
-
-        with open(manifest_path) as f:
-            manifest = json.load(f)
-
-        for key in self.REQUIRED_KEYS:
-            assert key in manifest, f"Missing key in manifest: {key}"
-
-    def test_manifest_cell_line(self, pipeline_output):
-        """Manifest cell_line should match directory."""
-        manifest_path = Path(pipeline_output) / "TestCell" / "manifest.json"
-
-        with open(manifest_path) as f:
-            manifest = json.load(f)
-
-        assert manifest["cell_line"] == "TestCell"
-
-    def test_manifest_replicates_structure(self, pipeline_output):
-        """Manifest replicates should have correct structure."""
-        manifest_path = Path(pipeline_output) / "TestCell" / "manifest.json"
-
-        with open(manifest_path) as f:
-            manifest = json.load(f)
-
-        replicates = manifest["replicates"]
-        assert isinstance(replicates, list)
-        assert len(replicates) > 0
-
-        for rep in replicates:
-            assert "replicate_id" in rep
-            assert "bam_path" in rep
-
-    def test_manifest_chrombpnet_structure(self, pipeline_output):
-        """Manifest chrombpnet should have repo_url and commit_sha."""
-        manifest_path = Path(pipeline_output) / "TestCell" / "manifest.json"
+    def test_gm12878_non_zero_mean(self, real_output_dir):
+        """GM12878 non_zero_average_mean should match expected value (±0.01 tolerance)."""
+        manifest_path = real_output_dir / "GM12878" / "manifest.json"
+        if not manifest_path.exists():
+            pytest.skip("GM12878 output not found - run pipeline first")
 
         with open(manifest_path) as f:
             manifest = json.load(f)
 
-        chrombpnet = manifest["chrombpnet"]
-        assert "repo_url" in chrombpnet
-        assert "commit_sha" in chrombpnet
+        actual = manifest["aggregation"]["non_zero_average_mean"]
+        actual_hash = self._hash_value(actual)
 
-    def test_manifest_normalization_structure(self, pipeline_output):
-        """Manifest normalization should have required fields."""
-        manifest_path = Path(pipeline_output) / "TestCell" / "manifest.json"
+        assert actual_hash in self.EXPECTED_HASHES["GM12878"], (
+            f"GM12878 non_zero_average_mean incorrect (got {actual:.2f})"
+        )
 
-        with open(manifest_path) as f:
-            manifest = json.load(f)
-
-        norm = manifest["normalization"]
-        required = ["target_total", "pre_total", "post_total", "scaling_factor", "tolerance"]
-
-        for key in required:
-            assert key in norm, f"Missing normalization key: {key}"
-
-        assert norm["target_total"] == 1e8
-
-    def test_manifest_aggregation_structure(self, pipeline_output):
-        """Manifest aggregation should have method and n_replicates."""
-        manifest_path = Path(pipeline_output) / "TestCell" / "manifest.json"
+    def test_hela_s3_non_zero_mean(self, real_output_dir):
+        """HeLa-S3 non_zero_average_mean should match expected value (±0.01 tolerance)."""
+        manifest_path = real_output_dir / "HeLa-S3" / "manifest.json"
+        if not manifest_path.exists():
+            pytest.skip("HeLa-S3 output not found - run pipeline first")
 
         with open(manifest_path) as f:
             manifest = json.load(f)
 
-        agg = manifest["aggregation"]
-        assert agg["method"] == "mean"
-        assert agg["n_replicates"] == 2
+        actual = manifest["aggregation"]["non_zero_average_mean"]
+        actual_hash = self._hash_value(actual)
 
+        assert actual_hash in self.EXPECTED_HASHES["HeLa-S3"], (
+            f"HeLa-S3 non_zero_average_mean incorrect (got {actual:.2f})"
+        )
 
-# ============================================================================
-# Test: Exit Codes
-# ============================================================================
+    def test_sk_n_sh_non_zero_mean(self, real_output_dir):
+        """SK-N-SH non_zero_average_mean should match expected value (±0.01 tolerance)."""
+        manifest_path = real_output_dir / "SK-N-SH" / "manifest.json"
+        if not manifest_path.exists():
+            pytest.skip("SK-N-SH output not found - run pipeline first")
 
-class TestExitCodes:
-    """Tests for correct exit codes."""
+        with open(manifest_path) as f:
+            manifest = json.load(f)
 
-    def test_success_exit_code(self, test_data_dir, tmp_path):
-        """Pipeline should exit with code 0 on success."""
-        output_dir = tmp_path / "output"
+        actual = manifest["aggregation"]["non_zero_average_mean"]
+        actual_hash = self._hash_value(actual)
 
-        cmd = [
-            "python", "run_dnase_tracks.py",
-            "--metadata", str(test_data_dir / "metadata.tsv"),
-            "--chrom-sizes", str(test_data_dir / "reference.chrom.sizes"),
-            "--outdir", str(output_dir),
-            "--threads", "1",
-        ]
-
-        result = subprocess.run(cmd, capture_output=True, cwd=Path(__file__).parent.parent.parent)
-        assert result.returncode == 0, f"Expected exit code 0, got {result.returncode}"
-
-
-# ============================================================================
-# Test: CLI Arguments
-# ============================================================================
-
-class TestCLI:
-    """Tests for CLI argument handling."""
-
-    def test_missing_metadata_fails(self, test_data_dir, tmp_path):
-        """Pipeline should fail with missing metadata."""
-        cmd = [
-            "python", "run_dnase_tracks.py",
-            "--metadata", "/nonexistent/metadata.tsv",
-            "--chrom-sizes", str(test_data_dir / "reference.chrom.sizes"),
-            "--outdir", str(tmp_path / "output"),
-        ]
-
-        result = subprocess.run(cmd, capture_output=True, cwd=Path(__file__).parent.parent.parent)
-        assert result.returncode != 0
-
-    def test_missing_chrom_sizes_fails(self, test_data_dir, tmp_path):
-        """Pipeline should fail with missing chrom sizes."""
-        cmd = [
-            "python", "run_dnase_tracks.py",
-            "--metadata", str(test_data_dir / "metadata.tsv"),
-            "--chrom-sizes", "/nonexistent/chrom.sizes",
-            "--outdir", str(tmp_path / "output"),
-        ]
-
-        result = subprocess.run(cmd, capture_output=True, cwd=Path(__file__).parent.parent.parent)
-        assert result.returncode != 0
+        assert actual_hash in self.EXPECTED_HASHES["SK-N-SH"], (
+            f"SK-N-SH non_zero_average_mean incorrect (got {actual:.2f})"
+        )
 
 
 if __name__ == "__main__":
