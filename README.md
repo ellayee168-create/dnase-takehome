@@ -68,22 +68,19 @@ out/
 {
   "cell_line": "MCF-7",
   "replicates": [
-    {"replicate_id": "ENCFF...", "bam_path": "..."}
+    {"replicate_id": "ENCFF..."}
   ],
   "chrombpnet": {
     "repo_url": "https://github.com/kundajelab/chrombpnet",
     "commit_sha": "..."
   },
-  "commands": ["python -m chrombpnet.helpers..."],
   "normalization": {
-    "target_total": 100000000,
     "pre_total": 12345678.0,
     "post_total": 100000000.0,
-    "scaling_factor": 8.1,
-    "tolerance": 0.01
+    "scaling_factor": 8.1
   },
   "aggregation": {
-    "method": "mean",
+    "non_zero_average_mean": 0.123,
     "n_replicates": 2
   }
 }

@@ -30,6 +30,13 @@ Expected output structure:
     └── SK-N-SH/
         └── ...
 
+manifest.json must contain:
+- cell_line: Name of the cell line
+- replicates: List of {replicate_id}
+- chrombpnet: {repo_url, commit_sha}
+- normalization: {pre_total, post_total, scaling_factor}
+- aggregation: {non_zero_average_mean, n_replicates}
+
 Author: [Your Name]
 """
 
