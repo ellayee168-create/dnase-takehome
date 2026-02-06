@@ -1,0 +1,3 @@
+[submodule "chrombpnet_repo"]
+	path = chrombpnet_repo
+	url = https://github.com/kundajelab/chrombpnet.git
