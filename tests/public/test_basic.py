@@ -35,18 +35,15 @@ def test_data_dir(tmp_path_factory):
         create_metadata_tsv,
     )
 
-    # Small chromosome sizes for fast testing
     chrom_sizes = {
         "chr1": 50000,
         "chr2": 40000,
         "chr3": 30000,
     }
 
-    # Create chrom sizes
     chrom_sizes_path = test_dir / "reference.chrom.sizes"
     create_chrom_sizes(str(chrom_sizes_path), chrom_sizes)
 
-    # Create BAMs
     bam_dir = test_dir / "bams"
     bam_dir.mkdir()
 
@@ -59,7 +56,6 @@ def test_data_dir(tmp_path_factory):
             bam_path = bam_dir / f"{rep_id}.bam"
             create_synthetic_bam(str(bam_path), chrom_sizes, n_reads=1000, seed=42 + i)
 
-    # Create metadata
     metadata_path = test_dir / "metadata.tsv"
     create_metadata_tsv(str(metadata_path), cell_lines, str(bam_dir))
 
@@ -81,7 +77,7 @@ def pipeline_output(test_data_dir, tmp_path_factory):
 
     result = subprocess.run(cmd, capture_output=True, text=True, cwd=Path(__file__).parent.parent.parent)
 
-    # Store result for debugging
+
     output_dir_path = Path(output_dir)
     (output_dir_path / "_stdout.txt").write_text(result.stdout)
     (output_dir_path / "_stderr.txt").write_text(result.stderr)
@@ -121,7 +117,6 @@ class TestManifestAccuracy:
         with open(manifest_path) as f:
             manifest = json.load(f)
 
-        # Compute non-zero average mean from BigWig
         non_zero_values = []
         with pyBigWig.open(str(bw_path)) as bw:
             for chrom in bw.chroms():
@@ -134,7 +129,6 @@ class TestManifestAccuracy:
         computed_mean = np.mean(non_zero_values) if non_zero_values else 0.0
         manifest_mean = manifest["aggregation"]["non_zero_average_mean"]
 
-        # Allow small tolerance for floating point differences
         assert abs(computed_mean - manifest_mean) < 1e-6, (
             f"non_zero_average_mean mismatch: manifest={manifest_mean}, computed={computed_mean}"
         )
@@ -151,23 +145,22 @@ class TestExpectedValues:
     without seeing the actual expected values.
     """
 
-    # SHA256 hashes of acceptable non_zero_average_mean values (±0.01 tolerance)
-    # Each cell line accepts 3 values: expected-0.01, expected, expected+0.01
+
     EXPECTED_HASHES = {
         "GM12878": [
-            "2bb5a2194f062fe01073e1a714faf9e34032cf2afb6c224010aaa1b1090b510e",  # 1.96
-            "c558fa9c4a4a6ad4962c10fa6b220b5a9a7129ac62c2f17ab96ff96ff7c29024",  # 1.97
-            "4348672d1a85fab51648c276be79cc8ee80608359b01705cd9a7f30dba2cb9dc",  # 1.98
+            "2bb5a2194f062fe01073e1a714faf9e34032cf2afb6c224010aaa1b1090b510e", 
+            "c558fa9c4a4a6ad4962c10fa6b220b5a9a7129ac62c2f17ab96ff96ff7c29024",
+            "4348672d1a85fab51648c276be79cc8ee80608359b01705cd9a7f30dba2cb9dc",
         ],
         "HeLa-S3": [
-            "90e683111c8a35ea92f86870185d5350d940315840e636019baa36cd37bb1dc7",  # 0.60
-            "c85e09eb8176db9e00c43c8bdc564dd91330c9d14f2a52ad6bc7872931e4c7ef",  # 0.61
-            "6669743c77ff5bb876bc7aa9cd5d54b997bee0bd5b6e1f86a1516feb574b0ff6",  # 0.62
+            "90e683111c8a35ea92f86870185d5350d940315840e636019baa36cd37bb1dc7",
+            "c85e09eb8176db9e00c43c8bdc564dd91330c9d14f2a52ad6bc7872931e4c7ef",
+            "6669743c77ff5bb876bc7aa9cd5d54b997bee0bd5b6e1f86a1516feb574b0ff6",
         ],
         "SK-N-SH": [
-            "18db98e3760ea46503aa9f79ad850cc408d0192446a5666220ca3b99346e3e8c",  # 0.69
-            "67194cd2e7ca284251eab9f18c295f7f031fb464267547240d7350e2707895a9",  # 0.70
-            "c68fa0c5dd8c9a2cf6555708f938a5d592d20b0d81f0d40ac6221d07500ae145",  # 0.71
+            "18db98e3760ea46503aa9f79ad850cc408d0192446a5666220ca3b99346e3e8c",
+            "67194cd2e7ca284251eab9f18c295f7f031fb464267547240d7350e2707895a9",
+            "c68fa0c5dd8c9a2cf6555708f938a5d592d20b0d81f0d40ac6221d07500ae145",
         ],
     }
 
