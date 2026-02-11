@@ -1,0 +1,16 @@
+cell_line	experiment_accession	file_accession	bam_url	spot1_score	read_length	biological_replicates
+GM12878	ENCSR000EMT	ENCFF729UYK	https://www.encodeproject.org/files/ENCFF729UYK/@@download/ENCFF729UYK.bam	0.36	36	2
+GM12878	ENCSR000EMT	ENCFF020WZB	https://www.encodeproject.org/files/ENCFF020WZB/@@download/ENCFF020WZB.bam	0.3863	36	1
+GM12878	ENCSR000EMT	ENCFF658WKQ	https://www.encodeproject.org/files/ENCFF658WKQ/@@download/ENCFF658WKQ.bam	0.5464	36	2
+GM12878	ENCSR000EMT	ENCFF593WBR	https://www.encodeproject.org/files/ENCFF593WBR/@@download/ENCFF593WBR.bam	0.4336	36	1
+HeLa-S3	ENCSR000ENO	ENCFF470DIH	https://www.encodeproject.org/files/ENCFF470DIH/@@download/ENCFF470DIH.bam	0.5111	36	1
+HeLa-S3	ENCSR959ZXU	ENCFF786NAW	https://www.encodeproject.org/files/ENCFF786NAW/@@download/ENCFF786NAW.bam	0.571	36	1
+HeLa-S3	ENCSR000ENO	ENCFF754ANZ	https://www.encodeproject.org/files/ENCFF754ANZ/@@download/ENCFF754ANZ.bam	0.6156	36	2
+HeLa-S3	ENCSR959ZXU	ENCFF706OIB	https://www.encodeproject.org/files/ENCFF706OIB/@@download/ENCFF706OIB.bam	0.4801	36	2
+HeLa-S3	ENCSR959ZXU	ENCFF912JKA	https://www.encodeproject.org/files/ENCFF912JKA/@@download/ENCFF912JKA.bam	0.6077	36	1
+HeLa-S3	ENCSR959ZXU	ENCFF180PCI	https://www.encodeproject.org/files/ENCFF180PCI/@@download/ENCFF180PCI.bam	0.5281	36	2
+HeLa-S3	ENCSR000ENO	ENCFF886SWA	https://www.encodeproject.org/files/ENCFF886SWA/@@download/ENCFF886SWA.bam	0.6444	36	2
+HeLa-S3	ENCSR000ENO	ENCFF147IMV	https://www.encodeproject.org/files/ENCFF147IMV/@@download/ENCFF147IMV.bam	0.5561	36	1
+SK-N-SH	ENCSR000ELQ	ENCFF998QMV	https://www.encodeproject.org/files/ENCFF998QMV/@@download/ENCFF998QMV.bam	0.5182	50	1
+SK-N-SH	ENCSR000EPZ	ENCFF988WTJ	https://www.encodeproject.org/files/ENCFF988WTJ/@@download/ENCFF988WTJ.bam	0.4258	36	2
+SK-N-SH	ENCSR000EPZ	ENCFF206IPN	https://www.encodeproject.org/files/ENCFF206IPN/@@download/ENCFF206IPN.bam	0.4597	36	2

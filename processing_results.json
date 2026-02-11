@@ -1,0 +1,56 @@
+{
+  "GM12878": {
+    "file_accessions": [
+      "ENCFF729UYK",
+      "ENCFF020WZB",
+      "ENCFF658WKQ",
+      "ENCFF593WBR"
+    ],
+    "aggregation": {
+      "non_zero_average_mean": 0.6314424137788497,
+      "n_replicates": 4
+    },
+    "normalization": {
+      "pre_total": 32048863.5,
+      "post_total": 100000000.0,
+      "scaling_factor": 3.120235449222716
+    }
+  },
+  "HeLa-S3": {
+    "file_accessions": [
+      "ENCFF470DIH",
+      "ENCFF786NAW",
+      "ENCFF754ANZ",
+      "ENCFF706OIB",
+      "ENCFF912JKA",
+      "ENCFF180PCI",
+      "ENCFF886SWA",
+      "ENCFF147IMV"
+    ],
+    "aggregation": {
+      "non_zero_average_mean": 0.5698830828794484,
+      "n_replicates": 8
+    },
+    "normalization": {
+      "pre_total": 104384222.0,
+      "post_total": 100000000.0,
+      "scaling_factor": 0.9579991888046069
+    }
+  },
+  "SK-N-SH": {
+    "file_accessions": [
+      "ENCFF998QMV",
+      "ENCFF988WTJ",
+      "ENCFF206IPN"
+    ],
+    "aggregation": {
+      "non_zero_average_mean": 0.6456216550762098,
+      "n_replicates": 3
+    },
+    "normalization": {
+      "pre_total": 103652504.85262716,
+      "post_total": 100000000.0,
+      "scaling_factor": 0.9647620203889884
+    }
+  }
+}

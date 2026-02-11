@@ -1,0 +1,167 @@
+[
+  {
+    "cell_line": "GM12878",
+    "experiment_accession": "ENCSR000EMT",
+    "file_accession": "ENCFF729UYK",
+    "bam_url": "https://www.encodeproject.org/files/ENCFF729UYK/@@download/ENCFF729UYK.bam",
+    "spot1_score": 0.36,
+    "read_length": 36,
+    "biological_replicates": [
+      2
+    ]
+  },
+  {
+    "cell_line": "GM12878",
+    "experiment_accession": "ENCSR000EMT",
+    "file_accession": "ENCFF020WZB",
+    "bam_url": "https://www.encodeproject.org/files/ENCFF020WZB/@@download/ENCFF020WZB.bam",
+    "spot1_score": 0.3863,
+    "read_length": 36,
+    "biological_replicates": [
+      1
+    ]
+  },
+  {
+    "cell_line": "GM12878",
+    "experiment_accession": "ENCSR000EMT",
+    "file_accession": "ENCFF658WKQ",
+    "bam_url": "https://www.encodeproject.org/files/ENCFF658WKQ/@@download/ENCFF658WKQ.bam",
+    "spot1_score": 0.5464,
+    "read_length": 36,
+    "biological_replicates": [
+      2
+    ]
+  },
+  {
+    "cell_line": "GM12878",
+    "experiment_accession": "ENCSR000EMT",
+    "file_accession": "ENCFF593WBR",
+    "bam_url": "https://www.encodeproject.org/files/ENCFF593WBR/@@download/ENCFF593WBR.bam",
+    "spot1_score": 0.4336,
+    "read_length": 36,
+    "biological_replicates": [
+      1
+    ]
+  },
+  {
+    "cell_line": "HeLa-S3",
+    "experiment_accession": "ENCSR000ENO",
+    "file_accession": "ENCFF470DIH",
+    "bam_url": "https://www.encodeproject.org/files/ENCFF470DIH/@@download/ENCFF470DIH.bam",
+    "spot1_score": 0.5111,
+    "read_length": 36,
+    "biological_replicates": [
+      1
+    ]
+  },
+  {
+    "cell_line": "HeLa-S3",
+    "experiment_accession": "ENCSR959ZXU",
+    "file_accession": "ENCFF786NAW",
+    "bam_url": "https://www.encodeproject.org/files/ENCFF786NAW/@@download/ENCFF786NAW.bam",
+    "spot1_score": 0.571,
+    "read_length": 36,
+    "biological_replicates": [
+      1
+    ]
+  },
+  {
+    "cell_line": "HeLa-S3",
+    "experiment_accession": "ENCSR000ENO",
+    "file_accession": "ENCFF754ANZ",
+    "bam_url": "https://www.encodeproject.org/files/ENCFF754ANZ/@@download/ENCFF754ANZ.bam",
+    "spot1_score": 0.6156,
+    "read_length": 36,
+    "biological_replicates": [
+      2
+    ]
+  },
+  {
+    "cell_line": "HeLa-S3",
+    "experiment_accession": "ENCSR959ZXU",
+    "file_accession": "ENCFF706OIB",
+    "bam_url": "https://www.encodeproject.org/files/ENCFF706OIB/@@download/ENCFF706OIB.bam",
+    "spot1_score": 0.4801,
+    "read_length": 36,
+    "biological_replicates": [
+      2
+    ]
+  },
+  {
+    "cell_line": "HeLa-S3",
+    "experiment_accession": "ENCSR959ZXU",
+    "file_accession": "ENCFF912JKA",
+    "bam_url": "https://www.encodeproject.org/files/ENCFF912JKA/@@download/ENCFF912JKA.bam",
+    "spot1_score": 0.6077,
+    "read_length": 36,
+    "biological_replicates": [
+      1
+    ]
+  },
+  {
+    "cell_line": "HeLa-S3",
+    "experiment_accession": "ENCSR959ZXU",
+    "file_accession": "ENCFF180PCI",
+    "bam_url": "https://www.encodeproject.org/files/ENCFF180PCI/@@download/ENCFF180PCI.bam",
+    "spot1_score": 0.5281,
+    "read_length": 36,
+    "biological_replicates": [
+      2
+    ]
+  },
+  {
+    "cell_line": "HeLa-S3",
+    "experiment_accession": "ENCSR000ENO",
+    "file_accession": "ENCFF886SWA",
+    "bam_url": "https://www.encodeproject.org/files/ENCFF886SWA/@@download/ENCFF886SWA.bam",
+    "spot1_score": 0.6444,
+    "read_length": 36,
+    "biological_replicates": [
+      2
+    ]
+  },
+  {
+    "cell_line": "HeLa-S3",
+    "experiment_accession": "ENCSR000ENO",
+    "file_accession": "ENCFF147IMV",
+    "bam_url": "https://www.encodeproject.org/files/ENCFF147IMV/@@download/ENCFF147IMV.bam",
+    "spot1_score": 0.5561,
+    "read_length": 36,
+    "biological_replicates": [
+      1
+    ]
+  },
+  {
+    "cell_line": "SK-N-SH",
+    "experiment_accession": "ENCSR000ELQ",
+    "file_accession": "ENCFF998QMV",
+    "bam_url": "https://www.encodeproject.org/files/ENCFF998QMV/@@download/ENCFF998QMV.bam",
+    "spot1_score": 0.5182,
+    "read_length": 50,
+    "biological_replicates": [
+      1
+    ]
+  },
+  {
+    "cell_line": "SK-N-SH",
+    "experiment_accession": "ENCSR000EPZ",
+    "file_accession": "ENCFF988WTJ",
+    "bam_url": "https://www.encodeproject.org/files/ENCFF988WTJ/@@download/ENCFF988WTJ.bam",
+    "spot1_score": 0.4258,
+    "read_length": 36,
+    "biological_replicates": [
+      2
+    ]
+  },
+  {
+    "cell_line": "SK-N-SH",
+    "experiment_accession": "ENCSR000EPZ",
+    "file_accession": "ENCFF206IPN",
+    "bam_url": "https://www.encodeproject.org/files/ENCFF206IPN/@@download/ENCFF206IPN.bam",
+    "spot1_score": 0.4597,
+    "read_length": 36,
+    "biological_replicates": [
+      2
+    ]
+  }
+]
