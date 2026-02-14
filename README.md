@@ -38,7 +38,7 @@ python run_dnase_tracks.py --cell-lines GM12878 HeLa-S3
 python run_dnase_tracks.py --chrombpnet-commit abc123
 ```
 
-### CLI Options
+### CLI Flags
 
 | Flag | Description |
 |------|-------------|
@@ -72,39 +72,28 @@ out/
 6. **Validate** - Verify BigWig integrity and signal sum
 7. **Generate Manifest** - Record all metadata and statistics
 
-### Quality Control Filters (per AlphaGenome)
+### Quality Control Filters (AlphaGenome)
 
 | Filter | Threshold | Rationale |
 |--------|-----------|-----------|
 | FRiP (spot1_score) | > 10% | Signal-to-noise quality |
-| Read length | ≥ 36 nt | Mappability |
 | ENCODE audit | No ERROR | Data quality |
 
 ### DNase Shift Parameters
 
-Per AlphaGenome: "Shifts of 0/+1 for DNase-seq were applied"
+From AlphaGenome Paper: "Shifts of 0/+1 for DNase-seq were applied"
 - Plus strand: +0 shift
 - Minus strand: +1 shift
 
 ### Normalization
 
-All tracks normalized to **10^8 total counts** (100M AUC) for cross-sample comparability.
+All tracks normalized to **10^8 total counts** (100M AUC) for cross-sample comparisons.
 
 ## Implementation Details
 
 ### Signal Preservation
 
-The pipeline uses `pyBigWig.addEntries()` directly instead of the external `bedGraphToBigWig` tool to avoid signal loss from float-to-int compression during bedGraph conversion. This ensures:
-- Full float64 precision preserved
-- Deterministic output (identical checksums on reruns)
-- No ~12% signal loss observed with bedGraphToBigWig
-
-### Determinism
-
-The pipeline produces identical outputs on repeated runs:
-- Chromosome order is sorted consistently
-- No random seeds or non-deterministic operations
-- Direct pyBigWig writing avoids tool-dependent variations
+The pipeline uses `pyBigWig.addEntries()` directly instead of the external `bedGraphToBigWig` tool to avoid signal loss from float-to-int compression during bedGraph conversion. ~12% signal loss was observed when using bedGraphToBigWig directly.
 
 ### `non_zero_average_mean` Calculation
 
