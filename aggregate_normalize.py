@@ -1,11 +1,12 @@
 #!/usr/bin/env python
 """
 Average replicates and normalize to 100M total counts.
+PATCHED: Uses pyBigWig.addEntries() directly instead of bedGraphToBigWig
+to avoid signal loss from compression/rounding.
 """
 
 import os
 import json
-import subprocess
 import numpy as np
 import pyBigWig
 
@@ -54,13 +55,47 @@ def write_bedgraph(values_by_chrom, output_path, chrom_sizes):
                     i += 1
 
 def bedgraph_to_bigwig(bedgraph_path, bigwig_path):
-    """Convert bedGraph to BigWig."""
-    subprocess.run([
-        "bedGraphToBigWig",
-        bedgraph_path,
-        CHROM_SIZES_FILE,
-        bigwig_path
-    ], check=True)
+    """
+    Convert bedGraph to BigWig using pyBigWig directly.
+    PATCHED: No longer uses external bedGraphToBigWig tool.
+    """
+    # Load chromosome sizes
+    chrom_sizes = load_chrom_sizes()
+    
+    # Parse bedGraph file
+    intervals_by_chrom = {}
+    with open(bedgraph_path, 'r') as f:
+        for line in f:
+            parts = line.strip().split('\t')
+            if len(parts) >= 4:
+                chrom = parts[0]
+                start = int(parts[1])
+                end = int(parts[2])
+                value = float(parts[3])
+                
+                if chrom not in intervals_by_chrom:
+                    intervals_by_chrom[chrom] = []
+                intervals_by_chrom[chrom].append((start, end, value))
+    
+    # Create BigWig file
+    bw = pyBigWig.open(bigwig_path, "w")
+    
+    # Add header with chromosome sizes (sorted order)
+    header = [(chrom, size) for chrom, size in sorted(chrom_sizes.items())]
+    bw.addHeader(header)
+    
+    # Write intervals for each chromosome
+    for chrom, size in header:
+        if chrom in intervals_by_chrom and intervals_by_chrom[chrom]:
+            intervals = sorted(intervals_by_chrom[chrom], key=lambda x: x[0])
+            
+            starts = [iv[0] for iv in intervals]
+            ends = [iv[1] for iv in intervals]
+            values = [iv[2] for iv in intervals]
+            
+            bw.addEntries([chrom] * len(starts), starts, ends=ends, values=values)
+    
+    bw.close()
 
 def average_bigwigs(bw_paths, output_path, chrom_sizes):
     """
