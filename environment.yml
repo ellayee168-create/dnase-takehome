@@ -14,3 +14,4 @@ dependencies:
   - bedtools
   - ucsc-bedgraphtobigwig
   - requests
+  - wget
