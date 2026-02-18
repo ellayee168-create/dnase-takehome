@@ -16,10 +16,10 @@ Replicates the DNase preprocessing methodology from the [AlphaGenome paper](http
 conda env create -f environment.yml
 conda activate dnase-pipeline
 
-# 2. Run pipeline (ENCODE mode - downloads data automatically)
+# 2. Run pipeline (ENCODE mode - preferred for evaluation)
 python run_dnase_tracks.py --cell-lines GM12878
 
-# Or run with local BAM files
+# Or run with local BAM files (local mode)
 python run_dnase_tracks.py --metadata metadata.tsv --chrom-sizes ref.chrom.sizes --outdir out
 ```
 
@@ -42,7 +42,7 @@ git clone https://github.com/kundajelab/chrombpnet.git
 
 ## Usage
 
-### ENCODE Mode (Query ENCODE API)
+### ENCODE Mode (Query ENCODE API, preferred for evaluation)
 
 Downloads and processes DNase-seq data directly from ENCODE:
 
