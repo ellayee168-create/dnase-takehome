@@ -170,18 +170,6 @@ From ChromBPNet methodology:
 
 All tracks normalized to 10^8 total counts (100M AUC).
 
-## Testing
-
-```bash
-# Run test suite
-pytest tests/public/test_basic.py -v
-
-# Tests include:
-# - BigWig file validity
-# - Manifest accuracy
-# - Expected values for GM12878, HeLa-S3, SK-N-SH
-```
-
 ## Dependencies
 
 See `environment.yml` for full list. Key packages:
